@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://zmena22-valtice.jeanai-site.cz/sitemap.xml
+Sitemap: https://zmena22valtice.cz/sitemap.xml
