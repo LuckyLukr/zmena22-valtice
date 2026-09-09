@@ -6,20 +6,20 @@
   --color-primary: #0D9488;
   --color-on-primary: #000000;
   --color-accent: #06B6D4;
-  --color-surface: #F8FAFC;
+  --color-surface: #E2E8F0;
   --color-text: #0F172A;
   --color-bg: #FFFFFF;
   --color-muted: #64748B;
   --color-bg-alt: color-mix(in srgb, #0D9488 6%, #FFFFFF);
-  --color-surface-tint: color-mix(in srgb, #06B6D4 10%, #F8FAFC);
-  --color-surface-strong: color-mix(in srgb, #0D9488 14%, #F8FAFC);
-  --color-card: color-mix(in srgb, #0D9488 7%, #F8FAFC);
-  --color-card-strong: color-mix(in srgb, #06B6D4 12%, #F8FAFC);
+  --color-surface-tint: color-mix(in srgb, #06B6D4 10%, #E2E8F0);
+  --color-surface-strong: color-mix(in srgb, #0D9488 14%, #E2E8F0);
+  --color-card: color-mix(in srgb, #0D9488 7%, #E2E8F0);
+  --color-card-strong: color-mix(in srgb, #06B6D4 12%, #E2E8F0);
   --color-line: color-mix(in srgb, #0F172A 10%, transparent);
   --color-line-strong: color-mix(in srgb, #0D9488 22%, transparent);
   --color-nav: color-mix(in srgb, #0F172A 4%, white);
   --color-nav-border: color-mix(in srgb, #0D9488 12%, transparent);
-  --color-image-placeholder: color-mix(in srgb, #06B6D4 9%, #F8FAFC);
+  --color-image-placeholder: color-mix(in srgb, #06B6D4 9%, #E2E8F0);
   --font-heading: 'Geist', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
 }
@@ -142,7 +142,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* jean-bg-fixed — the background holds still, the page scrolls over it. */
 @media (min-width: 1024px) and (hover: hover) {
-  .jean-site-shell .jean-bg-fixed { background-attachment: fixed; }
+  .jean-site-shell .jean-bg-fixed,
+  .jean-site-shell [data-jean-bg-fixed] { background-attachment: fixed; }
 }
 .jean-site-shell section h1,
 .jean-site-shell section h2 { text-wrap: balance; }
@@ -369,6 +370,55 @@ body {
 .jean-widget .jean-person-role { font-size: 0.875rem; font-weight: 500; color: var(--color-primary); margin: 0; }
 .jean-widget .jean-person-text { font-size: 0.875rem; line-height: 1.6; color: var(--color-muted); margin: 0; }
 .jean-widget .jean-person-date { font-size: 0.8rem; color: var(--color-muted); margin: 0; }
+/* PN-3 / 8z44 — the approved podnety. The markup shipped from the first day
+   (freeStyleWidgets.suggestions) and this stylesheet had no rule for a single
+   one of its classes, so a spec site rendered a stranger's photograph, title,
+   words, name and date as one unstyled column of text. Measured on the live
+   campaign site, on the feature the site exists for.
+
+   Three across on a desktop like the people grid beside it, and the same card
+   face (surface, line, radius) so the two read as one site. The photo is a
+   fixed 4/3 crop: podnet photographs arrive from phones in every proportion,
+   and a grid of ragged heights is what made the first draft look broken. */
+.jean-widget .jean-suggestion-grid { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 1.5rem; }
+@media (min-width: 640px) { .jean-widget .jean-suggestion-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .jean-widget .jean-suggestion-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.jean-widget[data-jean-columns="1"] .jean-suggestion-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+@media (min-width: 1024px) {
+  .jean-widget[data-jean-columns="2"] .jean-suggestion-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .jean-widget[data-jean-columns="4"] .jean-suggestion-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.jean-widget .jean-suggestion-card { display: flex; flex-direction: column; overflow: hidden; border-radius: 1rem; background: var(--color-surface); border: 1px solid var(--color-line); }
+.jean-widget .jean-suggestion-photo { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--color-image-placeholder, var(--color-surface)); cursor: zoom-in; }
+.jean-widget .jean-suggestion-body { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.25rem; }
+.jean-widget .jean-suggestion-title { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 600; color: var(--color-text); margin: 0; }
+/* The visitor's own words, wrapped rather than clamped: a podnet is short by
+   construction and the card that hides half of it is the card nobody trusts. */
+.jean-widget .jean-suggestion-text { font-size: 0.9rem; line-height: 1.6; color: var(--color-text); margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.jean-widget .jean-suggestion-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; margin: 0.25rem 0 0; font-size: 0.8rem; color: var(--color-muted); }
+/* The author and the date were running together into one word on the live
+   site ("Vas Zan Baklazan9. zari 2026") because nothing separated them. */
+.jean-widget .jean-suggestion-author { font-weight: 600; color: var(--color-text); }
+.jean-widget .jean-suggestion-author::after { content: "·"; margin-left: 0.5rem; font-weight: 400; color: var(--color-muted); }
+/* The three photo cuts, read off the MOUNT (peopleMountAttrs) — so the managed
+   widget and the static card agree, and an owner who adds a sixteenth candidate
+   in Funkce webu does not watch the section change shape.
+
+   No markup change: round is the default the section was born with and emits
+   nothing here, and the other two are reachable from the same avatar div. */
+.jean-widget[data-jean-photo-style="square"] .jean-person-avatar { border-radius: 1rem; }
+/* cover is the one that changes the CARD. The picture goes full-bleed across
+   the top, so the padding moves off the article and onto the text — otherwise
+   the photograph sits in a 1.5rem frame, which is the thing this style exists
+   to avoid. */
+.jean-widget[data-jean-photo-style="cover"] .jean-person-card { padding: 0 0 1.5rem; gap: 0; overflow: hidden; }
+.jean-widget[data-jean-photo-style="cover"] .jean-person-avatar { width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: 0; flex: 0 0 auto; }
+.jean-widget[data-jean-photo-style="cover"] .jean-person-body { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; padding: 1.25rem 1.5rem 0; }
+/* A list row keeps its avatar whatever the style says: a cover photograph
+   beside text is not a composition this section has. */
+.jean-widget[data-jean-people-layout="list"][data-jean-photo-style="cover"] .jean-person-card { padding: 1.5rem; gap: 0.75rem; }
+.jean-widget[data-jean-people-layout="list"][data-jean-photo-style="cover"] .jean-person-avatar { width: 7rem; height: 7rem; aspect-ratio: auto; border-radius: 9999px; }
+.jean-widget[data-jean-people-layout="list"][data-jean-photo-style="cover"] .jean-person-body { padding: 0; }
 .jean-widget .jean-menu-group { margin-bottom: 1.75rem; }
 .jean-widget .jean-menu-group:last-child { margin-bottom: 0; }
 .jean-widget .jean-menu-category { font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: var(--color-text); margin: 0 0 0.75rem; }
