@@ -95,6 +95,21 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--color-line-strong);
 }
 
+/* 8z46 core-4 — the two card looks that are a SHELL rather than content:
+   outlined is a line and no fill, filled is a fill and no line. Neither carries
+   a shadow, so the pair reads as a choice against the design's card surface. */
+.jean-card-outlined {
+  background: transparent;
+  border: 1px solid var(--color-line-strong);
+  box-shadow: none;
+}
+
+.jean-card-filled {
+  background: var(--color-card-strong);
+  border: 1px solid transparent;
+  box-shadow: none;
+}
+
 /* ─── Card behaviors ─── */
 .jean-float {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -408,6 +423,13 @@ body {
 .jean-widget .jean-person-role { font-size: 0.875rem; font-weight: 500; color: var(--color-primary); margin: 0; }
 .jean-widget .jean-person-text { font-size: 0.875rem; line-height: 1.6; color: var(--color-muted); margin: 0; }
 .jean-widget .jean-person-date { font-size: 0.8rem; color: var(--color-muted); margin: 0; }
+/* 8z46 core-3 — a people section written as groups keeps them once managed: each
+   run of people under its group's sub-heading, sized like the static walk's group
+   heading (text-2xl, lg:text-3xl, semibold, the heading font, mb-3), so the section
+   does not change shape the day it becomes managed. */
+.jean-widget .jean-person-group + .jean-person-group { margin-top: 2.5rem; }
+.jean-widget .jean-person-group-heading { font-family: var(--font-heading); font-size: 1.5rem; line-height: 2rem; font-weight: 600; color: var(--color-text); margin: 0 0 0.75rem; }
+@media (min-width: 1024px) { .jean-widget .jean-person-group-heading { font-size: 1.875rem; line-height: 2.25rem; } }
 /* PN-3 / 8z44 — the approved podnety. The markup shipped from the first day
    (freeStyleWidgets.suggestions) and this stylesheet had no rule for a single
    one of its classes, so a spec site rendered a stranger's photograph, title,
