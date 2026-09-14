@@ -124,16 +124,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 800;
 }
 
-/* lineLanguage: strong — 2px rules, bold/brutalist separation */
-.jean-site-shell :is(.jean-card, .jean-card-strong, .jean-elevated, .jean-soft-shadow, .jean-glass-card) {
-  box-shadow: none;
-  border: 2px solid color-mix(in srgb, var(--color-text) 30%, transparent);
-}
-.jean-site-shell .jean-float:hover {
-  box-shadow: none;
-  transform: translateY(-3px);
-}
-
 /* headerBehavior: sticky — in-page anchors clear the pinned header */
 .jean-site-shell section[id],
 .jean-site-shell [id]:not(section):not(body) {
@@ -192,7 +182,21 @@ html:has(.jean-site-shell header[data-jean-header-size='large']) {
    arrive carrying an inline var(--color-text), which is the site's INK — dark
    ink on a dark primary, light ink on a light one, wrong either way. The band
    owns legibility on its own fill, so the pair the theme derived wins. */
-.jean-site-shell .jean-on-primary :is(p, li, div, span, blockquote) { color: var(--color-on-primary, #fff) !important; }
+.jean-site-shell .jean-on-primary :is(p, li, div, span, blockquote, td, th, summary, h1, h2, h3, h4, h5, h6, strong, em) { color: var(--color-on-primary, #fff) !important; }
+/* A LINK on that band is its own case: it arrives with the site's accent, and
+   the accent on the primary is the one pair the theme cannot make legible
+   (8z46 EL-2b review round 2 measured it as primary-on-primary — invisible).
+   Underlined label ink, which is what a link on a coloured band is everywhere
+   else on the web. */
+.jean-site-shell .jean-on-primary a { color: var(--color-on-primary, #fff) !important; text-decoration: underline; }
+/* 8z46 EL-7 — a block's own width inside a group's grid on the SHARED block
+   path, which emits inline styles and cannot carry a media query. A phone is
+   one track (the group's grid is auto-fit), so a span there would grow an
+   implicit column and scroll the row sideways; above 768px it spans. */
+.jean-site-shell .jean-span { grid-column: auto; }
+@media (min-width: 768px) {
+  .jean-site-shell .jean-span { grid-column: span var(--jean-span, 1); }
+}
 html {
   scroll-behavior: smooth;
 }
