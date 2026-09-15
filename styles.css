@@ -110,6 +110,21 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: none;
 }
 
+/* 8z46 QL-2 — two more shells. flat is nothing at all: the icon, the title and
+   the words on the section's ground, as the leaflet draws them. elevated is a
+   line and a soft shadow, so the card floats above the ground. */
+.jean-card-flat {
+  background: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
+}
+
+.jean-card-elevated {
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  box-shadow: 0 10px 30px -12px rgba(15,23,42,0.28), 0 2px 6px rgba(15,23,42,0.06);
+}
+
 /* ─── Card behaviors ─── */
 .jean-float {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
