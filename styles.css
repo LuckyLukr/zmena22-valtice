@@ -125,6 +125,16 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 10px 30px -12px rgba(15,23,42,0.28), 0 2px 6px rgba(15,23,42,0.06);
 }
 
+/* 8z50 ER-10 — story: the blog's card (.jean-blog-card) as a look for any card.
+   Its surface and line; a feature card and the shared card primitive also take
+   its shape (the picture edge to edge on top, the words padded below). */
+.jean-card-story {
+  background: var(--color-card, var(--color-surface));
+  border: 1px solid var(--color-line);
+  box-shadow: none;
+  overflow: hidden;
+}
+
 /* ─── Card behaviors ─── */
 .jean-float {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
