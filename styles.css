@@ -110,6 +110,191 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: none;
 }
 
+/* 8z49 FP-1 — a section a person laid out by hand. Twelve tracks and rows of a
+   named height; the two bands arrive as custom properties so this class can be
+   replaced wholesale below the breakpoint, which an inline declaration could
+   not be. */
+.jean-grid-section {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: minmax(var(--jean-grid-row, 1rem), auto);
+  column-gap: var(--jean-grid-gap, 1.5rem);
+  row-gap: 0.5rem;
+  /* 8z49 FP-11 — a cell's z-index (its block's layer) is counted inside the
+     section and nowhere else: a block sent forward cannot cover the header,
+     one sent back cannot drop under the section's own ground. */
+  isolation: isolate;
+}
+
+/* 8z49 FP-10a (D11) — a cell is where a block SITS, not what it fills. Three
+   kinds, from the package's one table (blockCellFit):
+
+     .jean-cell-media    a picture, a video, the mark: laid over the cell by
+                         .jean-cell-fill, so it IS the cell somebody drew and
+                         gives the row no height of its own
+     .jean-cell-box      a card, a group: stretches (a grid item's default) and
+                         grows the rows when its content is taller
+     .jean-cell-content  a heading, a paragraph, a button: its own size, placed
+                         by the justify-items / align-items the cell carries
+
+   Only the fill wrapper and its picture are sized here, never '.jean-grid-cell
+   > *': the canvas hangs its grip and its eight handles on the cell as direct
+   children, and a rule on every child sized those too.
+
+   The history this replaces — every child of a cell at height 100% — is why
+   the owner saw a button stretched across twelve columns and a label in an
+   empty box. What stays true from it:
+
+   Review round 1 measured both halves wrong in the first cut. '> img' could
+   never match: the shared block path wraps every block in a div, so the
+   picture is '.jean-grid-cell div img'. And 'renderImagePrimitive' writes its
+   height INLINE (a band, or max-height:360px), which no stylesheet rule can
+   outrank without !important — so the Zmena 22 logo in a four-row cell
+   painted at 360px with the rest of the cell empty, which is this row's own
+   acceptance failing.
+
+   The SIZE is overridden and the FIT is not: 'objectFit' and 'objectPosition'
+   are keys the owner chose (8z46 QL-23a, deployed) and the cell has no
+   business replacing them. */
+.jean-grid-cell {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  /* 8z49 FP-11 — EVERY cell is positioned, not only a picture's. A picture's
+     cell has to be (its fill is laid over it), and a positioned box paints
+     above every non-positioned one whatever the document order: measured in a
+     browser, a photo covered the words written AFTER it — D3 ("the later
+     block paints on top") broken for exactly the words-over-a-photo case.
+     With every cell positioned, depth is document order and the layer, and
+     nothing else. */
+  position: relative;
+}
+
+.jean-cell-box > *,
+.jean-cell-content > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.jean-cell-media {
+  position: relative;
+}
+
+/* 8z49 D19 — a function's frame (a form, a mount): what it holds stretches
+   across the cell and reflows inside it, never past it. */
+.jean-grid-frame {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  /* A mount's columns are set by VIEWPORT queries (four people across from
+     1024 px); in a frame a person drew narrower they would stand four across
+     in 390 px. The frame is the container its content answers to instead. */
+  container-type: inline-size;
+}
+
+/* Only ever FEWER columns than the owner chose (review round 1): two across
+   for a list set to three or more — never for a one- or two-column list, or a
+   people LIST layout — and one across below 440 px for all. */
+@container (max-width: 760px) {
+  .jean-grid-frame .jean-widget:is([data-jean-columns="3"], [data-jean-columns="4"], [data-jean-columns="5"]):not([data-jean-people-layout="list"]) .jean-person-grid,
+  .jean-grid-frame .jean-widget:is([data-jean-columns="3"], [data-jean-columns="4"], [data-jean-columns="5"]) .jean-gallery-grid,
+  /* The podněty mount carries no column attribute (review round 2) — its
+     default is three across — so it is lowered unless the owner chose one or two. */
+  .jean-grid-frame .jean-widget:not([data-jean-columns="1"]):not([data-jean-columns="2"]) .jean-suggestion-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@container (max-width: 440px) {
+  /* The same specificity as the rule above and later, so below 440 px one
+     across wins even for a list set to three or more. */
+  .jean-grid-frame .jean-widget:is([data-jean-columns]):not([data-jean-columns="1"]) .jean-person-grid,
+  .jean-grid-frame .jean-widget:is([data-jean-columns]):not([data-jean-columns="1"]) .jean-gallery-grid,
+  .jean-grid-frame .jean-widget:not([data-jean-columns="1"]):not([data-jean-columns="0"]) .jean-suggestion-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+.jean-grid-frame > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* 8z49 FP-12 — a tilted block's wrapper. A grid like the cell it stands in, so
+   a card still stretches to its cell and a heading keeps its own width. */
+.jean-cell-turn {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+}
+
+.jean-cell-fill {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.jean-cell-fill > :first-child {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.jean-cell-fill img,
+.jean-cell-fill iframe,
+.jean-cell-fill video {
+  width: 100%;
+  height: 100% !important;
+  max-height: none !important;
+}
+
+/* D4, amended by D21 — the phone stacks in 'gridPhoneOrder' (the mark first,
+   then bands read left lane first) and releases every height. ONE query,
+   and it is the only place 'order' is ever applied: each cell carries the
+   number as --jean-cell-order, which does nothing at all until here. Above
+   the breakpoint a grid item's 'order' is NOT inert (it paints in
+   order-modified document order), and applying it there re-stacked every
+   overlapping pair — D3 broken by the one declaration meant to be dead. */
+@media (max-width: 767px) {
+  .jean-grid-section {
+    display: flex;
+    flex-direction: column;
+    grid-auto-rows: auto;
+    gap: var(--jean-grid-gap, 1.5rem);
+  }
+
+  .jean-grid-cell {
+    display: block;
+    width: 100%;
+    order: var(--jean-cell-order, 0);
+  }
+
+  /* A picture has no drawn cell on a phone: it stands in the column at its
+     own proportions, the way the flow shows it. */
+  .jean-cell-fill {
+    position: static;
+    display: block;
+  }
+
+  .jean-cell-fill img,
+  .jean-cell-fill iframe,
+  .jean-cell-fill video {
+    height: auto !important;
+  }
+
+  .jean-cell-fill iframe {
+    aspect-ratio: 16 / 9;
+  }
+
+  /* 8z49 D22 — a picture shown whole keeps the height it was drawn at (its
+     rows: one unit and a half-unit gap each), held to its side by its own
+     'objectPosition'. */
+  .jean-cell-contained .jean-cell-fill img {
+    height: var(--jean-cell-drawn-height, auto) !important;
+  }
+}
+
+
 /* 8z46 QL-2 — two more shells. flat is nothing at all: the icon, the title and
    the words on the section's ground, as the leaflet draws them. elevated is a
    line and a soft shadow, so the card floats above the ground. */
@@ -202,6 +387,11 @@ html:has(.jean-site-shell header[data-jean-header-size='large']) {
   .jean-site-shell header[data-jean-header-size='large'] > div:first-child,
   .jean-site-shell header[data-jean-header-size='large'] .jean-header-logo,
   .jean-site-shell header[data-jean-header-size='large'] .jean-header-name { transition: none; }
+}
+
+/* theme.borderRadius — the pictures' corner (8z56 W-6) */
+.jean-site-shell {
+  --jean-radius: .5rem;
 }
 
 /* jean-bg-fixed — the background holds still, the page scrolls over it. */
@@ -412,7 +602,7 @@ body {
 /* V3.4b part 2 — the shared widget skeletons, painted from theme tokens. */
 .jean-widget-empty { text-align: center; font-size: 0.875rem; color: var(--color-muted); margin: 0; }
 .jean-widget .jean-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
-.jean-widget .jean-gallery-item { position: relative; margin: 0; border-radius: 1rem; overflow: hidden; background: var(--color-image-placeholder, var(--color-surface)); }
+.jean-widget .jean-gallery-item { position: relative; margin: 0; border-radius: var(--jean-radius, 1rem); overflow: hidden; background: var(--color-image-placeholder, var(--color-surface)); }
 .jean-widget .jean-gallery-image { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
 /* 8z43 WE-4 (2) — the owner's gallery knobs, read off the mount (galleryMountAttrs in websiteSpecRenderer). The tiers mirror the static grid's Tailwind classes. */
 .jean-widget[data-jean-columns] .jean-gallery-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
@@ -512,6 +702,17 @@ body {
 .jean-widget .jean-menu-name { font-weight: 600; color: var(--color-text); }
 .jean-widget .jean-menu-price { white-space: nowrap; font-weight: 600; color: var(--color-primary); }
 .jean-widget .jean-menu-description { margin: 0.15rem 0 0; font-size: 0.875rem; color: var(--color-muted); }
+/* 8z56 W-5 — a programme, the next event first */
+.jean-widget .jean-events-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+.jean-widget .jean-events-item { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 1.25rem; border-radius: var(--jean-radius, 1rem); background: var(--color-card); border: 1px solid var(--color-line); }
+.jean-widget .jean-events-image { width: 7rem; height: 5rem; flex-shrink: 0; object-fit: cover; border-radius: var(--jean-radius, .75rem); display: block; }
+.jean-widget .jean-events-body { display: grid; gap: .25rem; min-width: 0; }
+.jean-widget .jean-events-when { margin: 0; display: flex; flex-wrap: wrap; gap: .6rem; font-size: .8rem; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--color-primary); }
+.jean-widget .jean-events-title { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--color-text); }
+.jean-widget .jean-events-line { margin: 0; color: var(--color-muted); }
+/* 8z66 E-2 — where and by whom */
+.jean-widget .jean-events-place { margin: 0; font-weight: 600; color: var(--color-text); }
+.jean-widget .jean-events-speaker { margin: 0; color: var(--color-muted); }
 .jean-widget .jean-hours-list { list-style: none; margin: 0; padding: 0; }
 .jean-widget .jean-hours-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--color-line); }
 .jean-widget .jean-hours-row:last-child { border-bottom: none; }
