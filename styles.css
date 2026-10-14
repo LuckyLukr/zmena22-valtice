@@ -767,3 +767,52 @@ body {
 .jean-widget .jean-blog-detail summary { cursor: pointer; list-style: none; }
 .jean-widget .jean-blog-link { font-size: 0.875rem; font-weight: 600; color: var(--color-primary); }
 .jean-widget .jean-blog-full { margin-top: 0.5rem; font-size: 0.875rem; color: var(--color-text); white-space: pre-wrap; }
+
+/* layout.edge — the section below draws the edge: its own ground, mirrored (8z80 SD-7) */
+.jean-site-shell {
+  --jean-edge-height: 4rem;
+}
+@media (max-width: 767px) {
+  .jean-site-shell {
+    --jean-edge-height: 2.5rem;
+  }
+}
+.jean-site-shell [data-jean-edge-above]:is(section, footer),
+.jean-site-shell [data-jean-edge-above] > section {
+  position: relative;
+}
+.jean-site-shell [data-jean-edge-above]:is(section, footer)::before,
+.jean-site-shell [data-jean-edge-above]:is(section, footer)::after,
+.jean-site-shell [data-jean-edge-above] > section::before,
+.jean-site-shell [data-jean-edge-above] > section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform-origin: top;
+  transform: translateY(1px) scaleY(-1);
+  background: inherit;
+  pointer-events: none;
+  -webkit-mask: var(--jean-edge-shape) top / 100% calc(var(--jean-edge-height) + 1px) no-repeat;
+  mask: var(--jean-edge-shape) top / 100% calc(var(--jean-edge-height) + 1px) no-repeat;
+}
+.jean-site-shell [data-jean-edge-above]:is(section, footer)::before,
+.jean-site-shell [data-jean-edge-above] > section::before {
+  background: var(--color-bg);
+  -webkit-mask-position: 0 -2px;
+  mask-position: 0 -2px;
+}
+.jean-site-shell [data-jean-edge-below] {
+  isolation: isolate;
+}
+.jean-site-shell .jean-edge-room {
+  padding-block: var(--jean-edge-height);
+}
+.jean-site-shell [data-jean-edge-above="wave"] {
+  --jean-edge-shape: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%201440%2064'%20preserveAspectRatio%3D'none'%3E%3Cpath%20transform%3D'translate(0%2064)%20scale(1%20-1)'%20d%3D'M0%2C64%20H1440%20V24%20C1200%2C72%20960%2C72%20720%2C40%20C480%2C8%20240%2C8%200%2C48%20Z'%2F%3E%3C%2Fsvg%3E");
+}
+.jean-site-shell [data-jean-edge-above="curve"] {
+  --jean-edge-shape: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%201440%2064'%20preserveAspectRatio%3D'none'%3E%3Cpath%20transform%3D'translate(0%2064)%20scale(1%20-1)'%20d%3D'M0%2C64%20H1440%20V0%20Q720%2C128%200%2C0%20Z'%2F%3E%3C%2Fsvg%3E");
+}
+.jean-site-shell [data-jean-edge-above="slant"] {
+  --jean-edge-shape: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%201440%2064'%20preserveAspectRatio%3D'none'%3E%3Cpath%20transform%3D'translate(0%2064)%20scale(1%20-1)'%20d%3D'M0%2C64%20L1440%2C64%20L1440%2C0%20Z'%2F%3E%3C%2Fsvg%3E");
+}
